@@ -1,0 +1,20 @@
+PATCH http://localhost:3000/posts
+Content-Type: application/json
+
+
+{
+    "id": 12, 
+    "postType": "post",
+  "slug": "invalid-meta-options",
+  "status": "draft",
+  "metaOptions": [
+    {
+      "key": "sdfsdf",
+      "value": "Invalid Key"
+    },
+    {
+      "key": 21,
+      "value": "adfsdfs"
+    }
+  ]
+}

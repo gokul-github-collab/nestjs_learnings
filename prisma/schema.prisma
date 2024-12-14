@@ -1,0 +1,76 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id Int @default(autoincrement())
+
+  firstName String
+
+  lastName String
+
+  email String @unique
+
+  password String
+}
+
+model Posts {
+  id               Int         @id @default(autoincrement())
+  title            String      @db.VarChar(512) // Correct usage of @db
+  postType         postType    @default(POST)
+  description      String
+  slug             String      @unique @db.VarChar(256) // Correct usage of @db
+  status           postStatus  @default(DRAFT)
+  content          String?     @db.Text // Correct usage of @db
+  schema           String?     @db.Text
+  featuredImageUrl String?     @db.VarChar(1024)
+  publishedOn      DateTime?
+  tags             String[]    @default([])
+  metaOptions      MetaOptions @relation(fields: [metaOptionsId], references: [id])
+  metaOptionsId    Int         @unique
+}
+
+enum postStatus {
+  DRAFT
+  SCHEDULED
+  REVIEW
+  PUBLISHED
+}
+
+enum postType {
+  POST
+  PAGE
+  STORY
+  SERIES
+}
+
+model Tags {
+  id               Int       @id @default(autoincrement())
+  name             String    @unique @db.VarChar(256)
+  slug             String    @unique @db.VarChar(256)
+  description      String?   @db.Text
+  schema           String?   @db.Text
+  featuredImageUrl String?   @unique @db.VarChar(1024)
+  createDate       DateTime  @default(now())
+  updateData       DateTime  @updatedAt
+  deleteData       DateTime?
+}
+
+model MetaOptions {
+  id         Int      @id @default(autoincrement())
+  metaValue  Json
+  createDate DateTime @default(now())
+  updateDate DateTime @updatedAt
+  posts      Posts?
+}
